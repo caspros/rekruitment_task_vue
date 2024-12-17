@@ -34,7 +34,7 @@ Below is a preview of the application:
 1. Clone the repository to your local machine:
    ```bash
    git clone https://github.com/your-username/recruitment_task_vue.git
-   cd recruitment_task_vue
+   cd recruitment_task_vue/frontend
 
 2. Install project dependencies: ```npm install```
 3. Start the local development server: ```npm run dev```
