@@ -1,5 +1,5 @@
 <template>
-  <div class="p-4 max-w-md mx-auto bg-white shadow-md rounded-lg text-gray-800">
+  <div class="p-4 max-w-md mx-auto bg-white shadow-md rounded-lg text-gray-800 mt-20">
     <h1 class="text-2xl font-bold mb-4">Edit Trainee</h1>
     <form @submit.prevent="updateTrainee" v-if="trainee">
       <div class="mb-4">

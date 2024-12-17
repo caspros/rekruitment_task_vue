@@ -1,5 +1,5 @@
 <template>
-  <div class="p-4 max-w-md mx-auto bg-white shadow-md rounded-lg text-gray-800">
+  <div class="p-4 max-w-md mx-auto bg-white shadow-md rounded-lg text-gray-800 mt-20">
     <h1 class="text-2xl font-bold mb-4">Add Trainee</h1>
     <form @submit.prevent="addTrainee">
       <div class="mb-4">
@@ -14,7 +14,11 @@
         <label class="block text-sm font-medium mb-1">Avatar (URL)</label>
         <input v-model="newTrainee.avatar" class="w-full border p-2 rounded-md" type="text" required />
       </div>
-      <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Add Trainee</button>
+      <div class="button-row flex w-full justify-between px-6">
+        <button @click="router.push(`/`)" class="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600">Cancel</button>
+        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Add Trainee</button>
+      </div>
+
     </form>
   </div>
 </template>

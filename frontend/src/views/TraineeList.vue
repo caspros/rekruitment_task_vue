@@ -8,11 +8,11 @@
         <FontAwesomeIcon icon="search" class="ml-2 text-gray-500 cursor-pointer" />
       </div>
 
-      <button @click="goToAddUser" class="ml-4 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Add User</button>
+      <button @click="goToAddUser" class="ml-4 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Add Trainee</button>
     </div>
 
     <div class="table-wrapper min-h-96">
-      <table class="w-full table-auto border-collapse border border-gray-300" v-if="trainees">
+      <table class="w-full table-auto border-collapse border border-gray-300" v-if="trainees.length">
         <thead>
         <tr>
           <th class="border border-gray-300 p-2 w-[100px] border-r-0"></th>
@@ -27,23 +27,23 @@
           </td>
           <td class="border p-2">{{ trainee.first_name }} {{ trainee.last_name }}</td>
 
-          <td class="border p-2 h-full gap-2 w-36">
+          <td class="border p-2 h-full w-36">
             <div class="m-auto flex w-fit">
-              <FontAwesomeIcon icon="edit" class="w-5 h-5 text-blue-600 cursor-pointer" @click="editTrainee(trainee.id)" />
-              <FontAwesomeIcon icon="trash" class="w-5 h-5 text-red-500 cursor-pointer" @click="deleteTrainee(trainee.id)" />
+              <FontAwesomeIcon icon="edit" class="px-2 w-7 h-7 scale-125 text-blue-600 cursor-pointer" @click="editTrainee(trainee.id)" />
+              <FontAwesomeIcon icon="trash" class="px-2 w-7 h-7 scale-125 text-red-500 cursor-pointer" @click="deleteTrainee(trainee.id)" />
             </div>
 
           </td>
         </tr>
         </tbody>
       </table>
-      <div v-else>
+      <div v-else class="text-center w-full min-h-96 mt-20 text-xl">
         No results...
       </div>
     </div>
 
 
-    <div class="mt-4 flex justify-center space-x-4" v-if="trainees">
+    <div class="mt-4 flex justify-center space-x-4" v-if="trainees.length">
       <button v-if="prevPage" @click="fetchTrainees(prevPage)" class="px-4 py-2 border rounded text-gray-700 hover:bg-gray-200 focus:outline-none">
         Previous
       </button>
