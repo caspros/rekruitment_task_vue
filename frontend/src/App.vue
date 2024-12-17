@@ -9,7 +9,7 @@
     </main>
 
     <footer class="bg-blue-800 text-white p-4 text-center shadow-md">
-      <p>© 2024 Kacper Śledzik - zadanie rekrutacyjne</p>
+      <p>© 2024 Kacper Śledzik - rekruitment task FootballTeam Frontend Developer</p>
     </footer>
   </div>
 </template>

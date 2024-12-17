@@ -8,31 +8,30 @@
         <FontAwesomeIcon icon="search" class="ml-2 text-gray-500 cursor-pointer" />
       </div>
 
-      <button @click="goToAddUser" class="ml-4 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Add Trainee</button>
+      <button @click="goToAddUser" class="ml-4 bg-blue-500 text-white px-1 md:px-4 min-w-24 py-2 rounded-md hover:bg-blue-600">Add Trainee</button>
     </div>
 
     <div class="table-wrapper min-h-96">
-      <table class="w-full table-auto border-collapse border border-gray-300" v-if="trainees.length">
+      <table class="w-full table-auto border-collapse border border-gray-300" v-if="displayedTrainees.length">
         <thead>
         <tr>
           <th class="border border-gray-300 p-2 w-[100px] border-r-0"></th>
           <th class="border border-gray-300 p-2 border-l-0">Fullname</th>
-          <th class="border border-gray-300 p-2"></th>
+          <th class="border border-gray-300 p-2 w-20 md:w-36"></th>
         </tr>
         </thead>
         <tbody>
-        <tr v-for="trainee in trainees" :key="trainee.id">
+        <tr v-for="trainee in displayedTrainees" :key="trainee.id">
           <td class="border p-2">
             <img :src="trainee.avatar" alt="Avatar" class="w-12 h-12 rounded-full mx-auto" />
           </td>
           <td class="border p-2">{{ trainee.first_name }} {{ trainee.last_name }}</td>
 
-          <td class="border p-2 h-full w-36">
+          <td class="border p-2 h-full w-20 md:w-36">
             <div class="m-auto flex w-fit">
-              <FontAwesomeIcon icon="edit" class="px-2 w-7 h-7 scale-125 text-blue-600 cursor-pointer" @click="editTrainee(trainee.id)" />
-              <FontAwesomeIcon icon="trash" class="px-2 w-7 h-7 scale-125 text-red-500 cursor-pointer" @click="deleteTrainee(trainee.id)" />
+              <FontAwesomeIcon icon="edit" class="px-2 w-7 h-7 md:scale-125 text-blue-600 cursor-pointer" @click="editTrainee(trainee.id)" />
+              <FontAwesomeIcon icon="trash" class="px-2 w-7 h-7 md:scale-125 text-red-500 cursor-pointer" @click="deleteTrainee(trainee.id)" />
             </div>
-
           </td>
         </tr>
         </tbody>
@@ -42,21 +41,35 @@
       </div>
     </div>
 
-
-    <div class="mt-4 flex justify-center space-x-4" v-if="trainees.length">
-      <button v-if="prevPage" @click="fetchTrainees(prevPage)" class="px-4 py-2 border rounded text-gray-700 hover:bg-gray-200 focus:outline-none">
-        Previous
+    <div class="mt-4 flex justify-center space-x-4" v-if="displayedTrainees.length && !searchQuery">
+      <button @click="fetchTrainees(prevPage)" class="px-4 py-2 border rounded text-gray-700 focus:outline-none" :disabled="!prevPage"
+      :class="prevPage ? 'hover:bg-gray-200' : 'opacity-75 cursor-not-allowed'"
+      >
+        <
       </button>
-      <span class="text-gray-700">Page {{ currentPage }} of {{ totalPages }}</span>
-      <button v-if="nextPage" @click="fetchTrainees(nextPage)" class="px-4 py-2 border rounded text-gray-700 hover:bg-gray-200 focus:outline-none">
-        Next
+
+      <div class="flex space-x-1">
+        <button v-for="page in totalPagesArray" :key="page"
+                @click="fetchTrainees(page)"
+                :class="['px-4 py-2 border rounded', {
+                'bg-blue-500 text-white': page === currentPage,
+                'bg-gray-200 text-gray-700 hover:bg-gray-300': page !== currentPage
+              }]">
+          {{ page }}
+        </button>
+      </div>
+
+      <button :disabled="!nextPage" @click="fetchTrainees(nextPage)" class="px-4 py-2 border rounded text-gray-700 focus:outline-none"
+              :class="nextPage ? 'hover:bg-gray-200' : 'opacity-75 cursor-not-allowed'"
+      >
+        >
       </button>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import {ref, onMounted, computed} from 'vue'
 import { useRouter } from 'vue-router'
 import axios from 'axios'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
@@ -73,7 +86,8 @@ interface Trainee {
   avatar: string
 }
 
-const trainees = ref<Trainee[]>([])
+const displayedTrainees = ref<Trainee[]>([])
+const allTrainees = ref<Trainee[]>([])
 const searchQuery = ref<string>('')
 const currentPage = ref<number>(1)
 const totalPages = ref<number>(0)
@@ -81,9 +95,14 @@ const prevPage = ref<number | null>(null)
 const nextPage = ref<number | null>(null)
 const router = useRouter()
 
+const totalPagesArray = computed(() => {
+  return Array.from({ length: totalPages.value }, (_, i) => i + 1);
+});
+
 const fetchTrainees = async (page = 1) => {
   const { data } = await axios.get(`https://reqres.in/api/users?page=${page}&per_page=5`)
-  trainees.value = data.data
+  allTrainees.value = data.data
+  displayedTrainees.value = data.data
   totalPages.value = data.total_pages
   currentPage.value = data.page
   prevPage.value = data.page > 1 ? data.page - 1 : null
@@ -92,7 +111,8 @@ const fetchTrainees = async (page = 1) => {
 }
 
 const filterTrainees = () => {
-  trainees.value = trainees.value.filter(
+  displayedTrainees.value = allTrainees.value
+  displayedTrainees.value = displayedTrainees.value.filter(
     trainee => trainee.first_name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
       trainee.last_name.toLowerCase().includes(searchQuery.value.toLowerCase())
   )
@@ -107,6 +127,11 @@ const editTrainee = (id: number) => {
 const deleteTrainee = async (id: number) => {
   try {
     await axios.delete(`https://reqres.in/api/users/${id}`)
+    if (searchQuery.value) {
+      filterTrainees()
+    } else {
+      fetchTrainees()
+    }
   } catch (error) {
     console.error('Error deleting:', error)
   }
