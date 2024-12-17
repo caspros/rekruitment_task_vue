@@ -2,6 +2,20 @@
 
 This project was created using Vue 3 and TypeScript as a recruitment task. The application displays a list of trainees with options for searching, editing, and deleting data, utilizing the fake API `reqres.in`.
 
+## Preview
+
+Below is a preview of the application:
+
+### Desktop Views
+![Desktop Preview](./preview/desktop.png)
+![Desktop Preview2](./preview/desktop_edit.png)
+![Desktop Preview3](./preview/desktop_create.png)
+
+### Mobile Views
+![Desktop Preview](./preview/mobile_list.png)
+![Desktop Preview2](./preview/mobile_edit.png)
+![Desktop Preview3](./preview/mobile_create.png)
+
 ## Features
 
 - Display a list of trainees.
